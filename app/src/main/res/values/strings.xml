@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">BirthdayRecruitment</string>
+    <string name="app_name">Birthday</string>
+
+    <string name="ip_dialog_title">Server IP</string>
+    <string name="ip_dialog_message">Type the server IP address below:</string>
+    <string name="ip_address">IP address</string>
+    <string name="ip_address_error">IP address cannot be empty!</string>
+    <string name="button_save">Save</string>
+
+    <string name="connection_failed_title">Connection failed</string>
+    <string name="connection_failed_message">An error with connection occurred, make sure you typed correct ip address!</string>
+    <string name="button_retry">Retry</string>
 </resources>
