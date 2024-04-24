@@ -10,4 +10,8 @@
     <string name="connection_failed_title">Connection failed</string>
     <string name="connection_failed_message">An error with connection occurred, make sure you typed correct ip address!</string>
     <string name="button_retry">Retry</string>
+
+    <string name="anniversary_title">Today %s is</string>
+    <string name="months_old">months old</string>
+    <string name="years_old">years old</string>
 </resources>
