@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.viewmodel)
     implementation(libs.viewmodel.compose)
     implementation(libs.material)
@@ -70,6 +71,7 @@ dependencies {
     implementation(libs.ktor.cio)
     implementation(libs.ktor.websockets)
     implementation(libs.kotlinx.serialization)
+    implementation(libs.coil)
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)

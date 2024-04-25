@@ -1,7 +1,9 @@
 package pl.sokolowskibartlomiej.birthdayrecruitment.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,8 +29,12 @@ class BirthdayViewModel(
     }
 
     fun setIp(ip: String) {
-        _uiState.getAndUpdate { it.copy(ip = ip) }
+        _uiState.getAndUpdate { it.copy(ip = ip, isLoadingFailed = false) }
         if (ip.isNotBlank()) getBirthday(ip)
+    }
+
+    fun setImageUri(uri: Uri) {
+        _uiState.getAndUpdate { it.copy(imageUri = uri) }
     }
 
     fun checkBirthdayReplayCache() {
@@ -40,11 +46,16 @@ class BirthdayViewModel(
     }
 
     private fun getBirthday(ip: String) {
-        _uiState.getAndUpdate { it.copy(isLoading = true) }
+        _uiState.getAndUpdate { it.copy(isLoading = it.birthday == null) }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.startConnection(ip)
-            repository.sendHappyBirthdayAction()
+        val handler = CoroutineExceptionHandler { _, _ ->
+            _uiState.getAndUpdate { it.copy(isLoading = false, isLoadingFailed = true) }
+        }
+        viewModelScope.launch(Dispatchers.IO + handler) {
+            launch {
+                repository.startConnection(ip)
+                repository.sendHappyBirthdayAction()
+            }
         }
     }
 
