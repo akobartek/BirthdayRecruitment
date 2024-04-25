@@ -5,5 +5,6 @@ import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.Birthday
 
 interface BirthdayRepository {
     fun getBirthdayFlow(ip: String): Flow<Birthday>
+    suspend fun sendHappyBirthdayAction()
     suspend fun closeConnection()
 }

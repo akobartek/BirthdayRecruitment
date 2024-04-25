@@ -69,7 +69,6 @@ dependencies {
     implementation(libs.ktor.core)
     implementation(libs.ktor.cio)
     implementation(libs.ktor.websockets)
-    implementation(libs.ktor.logging)
     implementation(libs.kotlinx.serialization)
 
     testImplementation(libs.junit)

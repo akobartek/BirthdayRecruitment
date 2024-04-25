@@ -13,10 +13,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.usecases.CloseConnectionUseCase
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.usecases.GetBirthdayFlowUseCase
+import pl.sokolowskibartlomiej.birthdayrecruitment.domain.usecases.SendHappyBirthdayUseCase
 import java.net.ConnectException
 
 class BirthdayViewModel(
     private val getBirthdayFlowUseCase: GetBirthdayFlowUseCase,
+    private val sendHappyBirthdayUseCase: SendHappyBirthdayUseCase,
     private val closeConnectionUseCase: CloseConnectionUseCase
 ) : ViewModel() {
 
@@ -48,6 +50,10 @@ class BirthdayViewModel(
             }
             .catch { exc -> _uiState.getAndUpdate { it.copy(isLoading = exc is ConnectException) } }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(7777), null)
+
+        viewModelScope.launch {
+            sendHappyBirthdayUseCase()
+        }
     }
 
     override fun onCleared() {

@@ -43,7 +43,6 @@ koin = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref =
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-websockets = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
-ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }

@@ -2,7 +2,7 @@ package pl.sokolowskibartlomiej.birthdayrecruitment.data.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocketSession
-import io.ktor.client.request.url
+import io.ktor.http.HttpMethod
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
@@ -24,28 +24,30 @@ class WebSocketBirthdayRepository(
 
     private var session: WebSocketSession? = null
 
-    override fun getBirthdayFlow(ip: String): Flow<Birthday> = flow {
-        session = httpClient.webSocketSession {
-            url("ws://$url/nanit")
+
+    override fun getBirthdayFlow(ip: String): Flow<Birthday> {
+        return flow {
+            session = httpClient.webSocketSession(
+                method = HttpMethod.Get,
+                host = ip,
+                port = 8080,
+                path = "/nanit"
+            )
+            val incomingBirthdays = session!!
+                .incoming
+                .consumeAsFlow()
+                .filterIsInstance<Frame.Text>()
+                .mapNotNull {
+                    Json.decodeFromString<WebSocketBirthday>(it.readText())
+                        .toDomainObject()
+                }
+
+            emitAll(incomingBirthdays)
         }
-        val incomingBirthdays = session!!
-            .incoming
-            .consumeAsFlow()
-            .filterIsInstance<Frame.Text>()
-            .mapNotNull {
-                Json.decodeFromString<WebSocketBirthday>(it.readText())
-                    .toDomainObject()
-            }
-
-        sendInitAction()
-
-        emitAll(incomingBirthdays)
     }
 
-    private suspend fun sendInitAction() {
-        session?.outgoing?.send(
-            Frame.Text("HappyBirthday")
-        )
+    override suspend fun sendHappyBirthdayAction() {
+        session?.outgoing?.send(Frame.Text("HappyBirthday"))
     }
 
     override suspend fun closeConnection() {
