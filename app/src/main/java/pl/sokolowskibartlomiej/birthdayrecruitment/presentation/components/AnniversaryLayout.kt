@@ -48,19 +48,15 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun AnniversaryLayout(birthday: Birthday) {
     val context = LocalContext.current
-    val colors = remember {
-        getColorsForTheme(birthday.theme)
-    }
-    val backgroundImage = remember {
-        when (birthday.theme) {
-            BirthdayTheme.PELICAN -> R.drawable.bg_pelican
-            BirthdayTheme.FOX -> R.drawable.bg_fox
-            BirthdayTheme.ELEPHANT -> R.drawable.bg_elephant
-            BirthdayTheme.UNKNOWN -> null
-        }
+    val colors = getColorsForTheme(birthday.theme)
+    val backgroundImage = when (birthday.theme) {
+        BirthdayTheme.PELICAN -> R.drawable.bg_pelican
+        BirthdayTheme.FOX -> R.drawable.bg_fox
+        BirthdayTheme.ELEPHANT -> R.drawable.bg_elephant
+        BirthdayTheme.UNKNOWN -> null
     }
     var areYearsShowed by remember { mutableStateOf(false) }
-    val number = remember {
+    val number = remember(birthday.birthDate) {
         val diff = Date().time - birthday.birthDate.time
         val days = TimeUnit.MILLISECONDS.toDays(diff)
         if (diff < 0) 0
