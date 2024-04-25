@@ -1,10 +1,12 @@
 package pl.sokolowskibartlomiej.birthdayrecruitment.domain.repository
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.Birthday
 
 interface BirthdayRepository {
-    fun getBirthdayFlow(ip: String): Flow<Birthday>
+    val birthdaysFlow: SharedFlow<Birthday?>
+
+    suspend fun startConnection(ip: String)
     suspend fun sendHappyBirthdayAction()
     suspend fun closeConnection()
 }

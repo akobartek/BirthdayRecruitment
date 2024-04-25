@@ -7,12 +7,10 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
 import pl.sokolowskibartlomiej.birthdayrecruitment.data.model.WebSocketBirthday
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.Birthday
@@ -23,27 +21,33 @@ class WebSocketBirthdayRepository(
 ) : BirthdayRepository {
 
     private var session: WebSocketSession? = null
+    private val _birthdaysFlow: MutableSharedFlow<Birthday?> = MutableSharedFlow()
+    override val birthdaysFlow: SharedFlow<Birthday?> = _birthdaysFlow.asSharedFlow()
 
-
-    override fun getBirthdayFlow(ip: String): Flow<Birthday> {
-        return flow {
-            session = httpClient.webSocketSession(
-                method = HttpMethod.Get,
-                host = ip,
-                port = 8080,
-                path = "/nanit"
-            )
-            val incomingBirthdays = session!!
-                .incoming
-                .consumeAsFlow()
-                .filterIsInstance<Frame.Text>()
-                .mapNotNull {
-                    Json.decodeFromString<WebSocketBirthday>(it.readText())
-                        .toDomainObject()
-                }
-
-            emitAll(incomingBirthdays)
+    override suspend fun startConnection(ip: String) {
+        session = httpClient.webSocketSession(
+            method = HttpMethod.Get,
+            host = ip,
+            port = 8080,
+            path = "/nanit"
+        )
+        session?.incoming?.consumeEach {
+            if (it is Frame.Text) {
+                _birthdaysFlow.tryEmit(
+                    Json.decodeFromString<WebSocketBirthday>(it.readText()).toDomainObject()
+                )
+            }
         }
+//            val incomingBirthdays = session!!
+//                .incoming
+//                .consumeAsFlow()
+//                .filterIsInstance<Frame.Text>()
+//                .mapNotNull {
+//                    Json.decodeFromString<WebSocketBirthday>(it.readText())
+//                        .toDomainObject()
+//                }
+//
+//            emitAll(incomingBirthdays)
     }
 
     override suspend fun sendHappyBirthdayAction() {

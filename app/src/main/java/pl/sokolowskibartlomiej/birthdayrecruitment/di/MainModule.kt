@@ -26,5 +26,6 @@ val mainModule = module {
     single { SendHappyBirthdayUseCase(get()) }
     single { CloseConnectionUseCase(get()) }
 
-    viewModel { BirthdayViewModel(get(), get(), get()) }
+    viewModel { BirthdayViewModel(get()) }
+//    viewModel { BirthdayViewModel(get(), get(), get()) }
 }
