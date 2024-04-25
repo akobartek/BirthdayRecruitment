@@ -7,9 +7,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import pl.sokolowskibartlomiej.birthdayrecruitment.data.repository.WebSocketBirthdayRepository
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.repository.BirthdayRepository
-import pl.sokolowskibartlomiej.birthdayrecruitment.domain.usecases.CloseConnectionUseCase
-import pl.sokolowskibartlomiej.birthdayrecruitment.domain.usecases.GetBirthdayFlowUseCase
-import pl.sokolowskibartlomiej.birthdayrecruitment.domain.usecases.SendHappyBirthdayUseCase
 import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.BirthdayViewModel
 
 val mainModule = module {
@@ -22,10 +19,6 @@ val mainModule = module {
     }
 
     single<BirthdayRepository> { WebSocketBirthdayRepository(get()) }
-    single { GetBirthdayFlowUseCase(get()) }
-    single { SendHappyBirthdayUseCase(get()) }
-    single { CloseConnectionUseCase(get()) }
 
     viewModel { BirthdayViewModel(get()) }
-//    viewModel { BirthdayViewModel(get(), get(), get()) }
 }

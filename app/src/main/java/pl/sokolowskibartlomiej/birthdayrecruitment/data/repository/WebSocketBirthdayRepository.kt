@@ -21,7 +21,7 @@ class WebSocketBirthdayRepository(
 ) : BirthdayRepository {
 
     private var session: WebSocketSession? = null
-    private val _birthdaysFlow: MutableSharedFlow<Birthday?> = MutableSharedFlow()
+    private val _birthdaysFlow: MutableSharedFlow<Birthday?> = MutableSharedFlow(replay = 1)
     override val birthdaysFlow: SharedFlow<Birthday?> = _birthdaysFlow.asSharedFlow()
 
     override suspend fun startConnection(ip: String) {
@@ -38,16 +38,6 @@ class WebSocketBirthdayRepository(
                 )
             }
         }
-//            val incomingBirthdays = session!!
-//                .incoming
-//                .consumeAsFlow()
-//                .filterIsInstance<Frame.Text>()
-//                .mapNotNull {
-//                    Json.decodeFromString<WebSocketBirthday>(it.readText())
-//                        .toDomainObject()
-//                }
-//
-//            emitAll(incomingBirthdays)
     }
 
     override suspend fun sendHappyBirthdayAction() {
