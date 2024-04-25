@@ -4,7 +4,7 @@
 
 **or**
 
-**2.** Put the prepared .apk file (app-events.apk) on your phone or emulator, then run it.
+**2.** Put the prepared .apk file (app-birthday.apk) on your phone or emulator, then run it.
 
 
 **Then, when you will have app installed, start the server and paste the ip address from the server app in the dialog (without port).**
