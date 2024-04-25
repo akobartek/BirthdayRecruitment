@@ -25,7 +25,7 @@ fun BirthdayScreen(viewModel: BirthdayViewModel = koinViewModel()) {
     LaunchedEffect(key1 = lifecycleState) {
         when (lifecycleState) {
             Lifecycle.State.RESUMED ->
-                if (uiState.ip.isNotBlank()) viewModel.checkBirthdayReplayCache()
+                if (uiState.ip.isNotBlank()) viewModel.checkBirthdayAvailable()
 
             else -> {}
         }
