@@ -14,6 +14,7 @@ material = "1.11.0"
 koin = "3.5.6"
 ktor = "2.3.10"
 serialization = "1.6.3"
+coil = "2.6.0"
 coroutinesTest = "1.8.0"
 mockito = "5.7.0"
 mockitoKotlin = "5.2.0"
@@ -36,6 +37,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-ui-test = { group = "androidx.compose.ui", name = "ui-test" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityCompose" }
 viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -44,6 +46,7 @@ ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"
 ktor-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-websockets = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 koin-test-junit = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }

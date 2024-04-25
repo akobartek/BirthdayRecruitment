@@ -1,5 +1,6 @@
 package pl.sokolowskibartlomiej.birthdayrecruitment.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,6 +31,10 @@ class BirthdayViewModel(
     fun setIp(ip: String) {
         _uiState.getAndUpdate { it.copy(ip = ip, isLoadingFailed = false) }
         if (ip.isNotBlank()) getBirthday(ip)
+    }
+
+    fun setImageUri(uri: Uri) {
+        _uiState.getAndUpdate { it.copy(imageUri = uri) }
     }
 
     fun checkBirthdayReplayCache() {

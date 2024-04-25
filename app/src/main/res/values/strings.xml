@@ -15,7 +15,16 @@
     <string name="anniversary_title">Today %s is</string>
     <string name="anniversary_title_v2">%s is</string>
     <string name="just_born">just born!</string>
-    <string name="weeks_old">weeks old!</string>
-    <string name="months_old">months old!</string>
-    <string name="years_old">years old!</string>
+    <plurals name="weeks_old">
+        <item quantity="one">week old!</item>
+        <item quantity="other">weeks old!</item>
+    </plurals>
+    <plurals name="months_old">
+        <item quantity="one">month old!</item>
+        <item quantity="other">months old!</item>
+    </plurals>
+    <plurals name="years_old">
+        <item quantity="one">year old!</item>
+        <item quantity="other">years old!</item>
+    </plurals>
 </resources>

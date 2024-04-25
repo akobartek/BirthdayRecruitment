@@ -1,5 +1,6 @@
 package pl.sokolowskibartlomiej.birthdayrecruitment.presentation.components
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,6 +38,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import pl.sokolowskibartlomiej.birthdayrecruitment.R
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.Birthday
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.BirthdayTheme
@@ -55,7 +59,11 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.sqrt
 
 @Composable
-fun AnniversaryLayout(birthday: Birthday) {
+fun BirthdayLayout(
+    birthday: Birthday,
+    imageUri: Uri? = null,
+    onAddPhotoClicked: () -> Unit = {}
+) {
     val context = LocalContext.current
     val colors = getColorsForTheme(birthday.theme)
     val backgroundImage = when (birthday.theme) {
@@ -73,14 +81,17 @@ fun AnniversaryLayout(birthday: Birthday) {
                 ageType = ChildAgeType.YEARS
                 (days / 365).toInt()
             }
+
             days < 7 -> {
                 ageType = ChildAgeType.NEWBORN
                 0
             }
+
             days < 30 -> {
                 ageType = ChildAgeType.WEEKS
                 (days / 7).toInt()
             }
+
             else -> {
                 ageType = ChildAgeType.MONTHS
                 (days / 30.4).toInt()
@@ -110,11 +121,22 @@ fun AnniversaryLayout(birthday: Birthday) {
                     photoSizePx = it.size.height
                 }
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.photo_placeholder),
-                colorFilter = ColorFilter.tint(color = colors[1]),
-                contentDescription = null,
-            )
+            if (imageUri == null) {
+                Image(
+                    painter = painterResource(id = R.drawable.photo_placeholder),
+                    colorFilter = ColorFilter.tint(color = colors[1]),
+                    contentDescription = null,
+                )
+            } else {
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                )
+            }
         }
         Image(
             painter = painterResource(id = R.drawable.ic_photo_plus),
@@ -131,9 +153,7 @@ fun AnniversaryLayout(birthday: Birthday) {
                     IntOffset(x.toInt(), y.toInt())
                 }
                 .background(color = colors[1], shape = CircleShape)
-                .clickable {
-
-                }
+                .clickable { onAddPhotoClicked() }
         )
 
         backgroundImage?.let {
@@ -199,8 +219,12 @@ fun AnniversaryLayout(birthday: Birthday) {
                 }
             }
             Spacer(modifier = Modifier.height(14.dp))
+            val message = when (ageType) {
+                ChildAgeType.NEWBORN -> stringResource(id = ageType.messageId)
+                else -> pluralStringResource(id = ageType.messageId, count = number)
+            }
             Text(
-                text = stringResource(id = ageType.messageId).uppercase(),
+                text = message.uppercase(),
                 color = Color(0xFF394562),
                 fontSize = 21.sp,
                 textAlign = TextAlign.Center,
@@ -214,7 +238,7 @@ fun AnniversaryLayout(birthday: Birthday) {
 @Composable
 fun AnniversaryPelicanNewbornPreview() {
     BirthdayRecruitmentTheme {
-        AnniversaryLayout(
+        BirthdayLayout(
             birthday = Birthday(
                 name = "Cristiano Ronaldo",
                 theme = BirthdayTheme.PELICAN,
@@ -228,7 +252,7 @@ fun AnniversaryPelicanNewbornPreview() {
 @Composable
 fun AnniversaryPelicanPreview() {
     BirthdayRecruitmentTheme {
-        AnniversaryLayout(
+        BirthdayLayout(
             birthday = Birthday(
                 name = "Cristiano Ronaldo",
                 theme = BirthdayTheme.PELICAN,
@@ -241,7 +265,7 @@ fun AnniversaryPelicanPreview() {
 @Preview(showBackground = true)
 @Composable
 fun AnniversaryFoxPreview() {
-    AnniversaryLayout(
+    BirthdayLayout(
         birthday = Birthday(
             name = "Cristiano Ronaldo",
             theme = BirthdayTheme.FOX,
@@ -253,7 +277,7 @@ fun AnniversaryFoxPreview() {
 @Preview(showBackground = true)
 @Composable
 fun AnniversaryElephantPreview() {
-    AnniversaryLayout(
+    BirthdayLayout(
         birthday = Birthday(
             name = "Cristiano Ronaldo",
             theme = BirthdayTheme.ELEPHANT,

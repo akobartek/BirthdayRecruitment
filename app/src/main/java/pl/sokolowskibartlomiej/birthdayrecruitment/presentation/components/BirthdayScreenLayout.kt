@@ -1,5 +1,6 @@
 package pl.sokolowskibartlomiej.birthdayrecruitment.presentation.components
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +23,17 @@ fun BirthdayScreenLayout(
     isLoading: Boolean = false,
     isLoadingFailed: Boolean = false,
     birthday: Birthday? = null,
-    onSaveIp: (String) -> Unit = {}
+    imageUri: Uri? = null,
+    onSaveIp: (String) -> Unit = {},
+    onAddPhotoClicked: () -> Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (birthday != null)
-            AnniversaryLayout(birthday = birthday)
+            BirthdayLayout(
+                birthday = birthday,
+                imageUri = imageUri,
+                onAddPhotoClicked = onAddPhotoClicked
+            )
 
         IpInputDialog(
             isVisible = ip.isBlank(),
