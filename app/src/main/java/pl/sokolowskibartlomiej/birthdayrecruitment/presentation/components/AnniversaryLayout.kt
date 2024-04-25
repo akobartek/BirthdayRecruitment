@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import pl.sokolowskibartlomiej.birthdayrecruitment.R
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.Birthday
 import pl.sokolowskibartlomiej.birthdayrecruitment.domain.model.BirthdayTheme
+import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.model.ChildAgeType
 import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.theme.BirthdayRecruitmentTheme
 import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.theme.getColorsForTheme
 import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.utils.getDrawableId
@@ -63,17 +64,27 @@ fun AnniversaryLayout(birthday: Birthday) {
         BirthdayTheme.ELEPHANT -> R.drawable.bg_elephant
         BirthdayTheme.UNKNOWN -> null
     }
-    var areYearsShowed by remember { mutableStateOf(false) }
+    var ageType by remember { mutableStateOf(ChildAgeType.NEWBORN) }
     val number = remember(birthday.birthDate) {
         val diff = Date().time - birthday.birthDate.time
         val days = TimeUnit.MILLISECONDS.toDays(diff)
-        if (diff < 0) 0
-        else if (days > 365) {
-            areYearsShowed = true
-            (days / 365).toInt()
-        } else {
-            areYearsShowed = false
-            (days / 30.4).toInt()
+        when {
+            days > 365 -> {
+                ageType = ChildAgeType.YEARS
+                (days / 365).toInt()
+            }
+            days < 7 -> {
+                ageType = ChildAgeType.NEWBORN
+                0
+            }
+            days < 30 -> {
+                ageType = ChildAgeType.WEEKS
+                (days / 7).toInt()
+            }
+            else -> {
+                ageType = ChildAgeType.MONTHS
+                (days / 30.4).toInt()
+            }
         }
     }
     var photoOffset by remember { mutableStateOf(Offset.Zero) }
@@ -154,42 +165,42 @@ fun AnniversaryLayout(birthday: Birthday) {
                 .fillMaxHeight()
         ) {
             Text(
-                text = stringResource(id = R.string.anniversary_title, birthday.name).uppercase(),
+                text = stringResource(id = ageType.titleId, birthday.name).uppercase(),
                 color = Color(0xFF394562),
                 fontSize = 21.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight(500),
                 modifier = Modifier.width(252.dp)
             )
-            Spacer(modifier = Modifier.height(13.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(22.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.swirls),
-                    contentDescription = null
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    number.toString().forEach {
-                        Image(
-                            painter = painterResource(id = context.getDrawableId("number$it")),
-                            contentDescription = null,
-                            modifier = Modifier.height(88.dp)
-                        )
+            if (number > 0) {
+                Spacer(modifier = Modifier.height(13.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(22.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.swirls),
+                        contentDescription = null
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        number.toString().forEach {
+                            Image(
+                                painter = painterResource(id = context.getDrawableId("number$it")),
+                                contentDescription = null,
+                                modifier = Modifier.height(88.dp)
+                            )
+                        }
                     }
+                    Image(
+                        painter = painterResource(id = R.drawable.swirls),
+                        contentDescription = null,
+                        modifier = Modifier.rotate(180f)
+                    )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.swirls),
-                    contentDescription = null,
-                    modifier = Modifier.rotate(180f)
-                )
             }
             Spacer(modifier = Modifier.height(14.dp))
             Text(
-                text = stringResource(
-                    id = if (areYearsShowed) R.string.years_old else R.string.months_old
-                ).uppercase(),
+                text = stringResource(id = ageType.messageId).uppercase(),
                 color = Color(0xFF394562),
                 fontSize = 21.sp,
                 textAlign = TextAlign.Center,
@@ -201,13 +212,27 @@ fun AnniversaryLayout(birthday: Birthday) {
 
 @Preview(showBackground = true)
 @Composable
+fun AnniversaryPelicanNewbornPreview() {
+    BirthdayRecruitmentTheme {
+        AnniversaryLayout(
+            birthday = Birthday(
+                name = "Cristiano Ronaldo",
+                theme = BirthdayTheme.PELICAN,
+                birthDate = Date(1713699211000) //21.02.2024
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 fun AnniversaryPelicanPreview() {
     BirthdayRecruitmentTheme {
         AnniversaryLayout(
             birthday = Birthday(
                 name = "Cristiano Ronaldo",
                 theme = BirthdayTheme.PELICAN,
-                birthDate = Date(1706871600000) //02.02.2024
+                birthDate = Date(1712748811000) //10.02.2024
             )
         )
     }

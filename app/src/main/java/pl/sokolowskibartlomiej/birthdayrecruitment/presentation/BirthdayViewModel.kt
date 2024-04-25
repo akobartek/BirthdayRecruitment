@@ -41,7 +41,7 @@ class BirthdayViewModel(
     }
 
     private fun getBirthday(ip: String) {
-        _uiState.getAndUpdate { it.copy(isLoading = true) }
+        _uiState.getAndUpdate { it.copy(isLoading = it.birthday == null) }
 
         val handler = CoroutineExceptionHandler { _, _ ->
             _uiState.getAndUpdate { it.copy(isLoading = false, isLoadingFailed = true) }
