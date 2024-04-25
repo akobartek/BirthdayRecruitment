@@ -8,9 +8,10 @@
     <string name="button_save">Save</string>
 
     <string name="connection_failed_title">Connection failed</string>
-    <string name="connection_failed_message">An error with connection occurred, make sure you typed correct ip address!</string>
+    <string name="connection_failed_message">An error with connection occurred, make sure you typed correct ip address and the server is running!</string>
     <string name="button_retry">Retry</string>
 
+    <string name="waiting_for_messages">Waiting for messages…</string>
     <string name="anniversary_title">Today %s is</string>
     <string name="months_old">months old</string>
     <string name="years_old">years old</string>
