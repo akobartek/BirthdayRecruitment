@@ -3,6 +3,7 @@ package pl.sokolowskibartlomiej.birthdayrecruitment.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,21 +21,26 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pl.sokolowskibartlomiej.birthdayrecruitment.R
@@ -44,6 +51,7 @@ import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.theme.getColorsF
 import pl.sokolowskibartlomiej.birthdayrecruitment.presentation.utils.getDrawableId
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import kotlin.math.sqrt
 
 @Composable
 fun AnniversaryLayout(birthday: Birthday) {
@@ -68,6 +76,8 @@ fun AnniversaryLayout(birthday: Birthday) {
             (days / 30.4).toInt()
         }
     }
+    var photoOffset by remember { mutableStateOf(Offset.Zero) }
+    var photoSizePx by remember { mutableIntStateOf(0) }
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -75,6 +85,7 @@ fun AnniversaryLayout(birthday: Birthday) {
             .fillMaxSize()
             .background(colors[0])
     ) {
+        // Photo box
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -83,6 +94,10 @@ fun AnniversaryLayout(birthday: Birthday) {
                 .size(200.dp)
                 .background(color = colors[2], shape = CircleShape)
                 .border(width = 7.dp, color = colors[1], shape = CircleShape)
+                .onGloballyPositioned {
+                    photoOffset = it.positionInParent()
+                    photoSizePx = it.size.height
+                }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.photo_placeholder),
@@ -90,6 +105,26 @@ fun AnniversaryLayout(birthday: Birthday) {
                 contentDescription = null,
             )
         }
+        Image(
+            painter = painterResource(id = R.drawable.ic_photo_plus),
+            contentScale = ContentScale.Inside,
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .size(36.dp)
+                .offset {
+                    val moveBy = (sqrt(2f) / 2) * (photoSizePx / 2) // sin45 * image radius
+                    val x =
+                        (photoOffset.x + 89.dp.toPx() + moveBy) // (image radius + border) - half size of this box
+                    val y = (photoOffset.y + (93.dp.toPx() - moveBy)) // image radius - border
+                    IntOffset(x.toInt(), y.toInt())
+                }
+                .background(color = colors[1], shape = CircleShape)
+                .clickable {
+
+                }
+        )
+
         backgroundImage?.let {
             Image(
                 painter = painterResource(id = backgroundImage),
@@ -100,6 +135,17 @@ fun AnniversaryLayout(birthday: Birthday) {
                     .aspectRatio(0.61f)
             )
         }
+
+        // Nanit logo
+        Image(
+            painter = painterResource(id = R.drawable.nanit),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 148.dp)
+        )
+
+        // Age section
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -150,13 +196,6 @@ fun AnniversaryLayout(birthday: Birthday) {
                 fontWeight = FontWeight(500)
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.nanit),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 148.dp)
-        )
     }
 }
 
